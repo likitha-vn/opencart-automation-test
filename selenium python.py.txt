@@ -1,0 +1,35 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+import time
+
+# Setup
+driver = webdriver.Chrome()
+driver.get("https://demo.opencart.com/")
+driver.maximize_window()
+
+# Login
+driver.find_element(By.LINK_TEXT, "My Account").click()
+driver.find_element(By.LINK_TEXT, "Login").click()
+driver.find_element(By.ID, "input-email").send_keys("testuser@example.com")
+driver.find_element(By.ID, "input-password").send_keys("Password123")
+driver.find_element(By.CSS_SELECTOR, "input.btn-primary").click()
+
+# Search product
+search_box = driver.find_element(By.NAME, "search")
+search_box.send_keys("MacBook")
+search_box.send_keys(Keys.RETURN)
+
+# Add to cart
+driver.find_element(By.LINK_TEXT, "MacBook").click()
+driver.find_element(By.ID, "button-cart").click()
+time.sleep(2)
+
+# Verify cart count
+driver.find_element(By.ID, "cart-total").click()
+cart_text = driver.find_element(By.ID, "cart-total").text
+assert "1 item(s)" in cart_text
+
+print("Test Passed: Product added to cart successfully!")
+
+driver.quit()
